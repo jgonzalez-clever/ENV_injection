@@ -9,9 +9,8 @@ jobs:
       runs-on: ubuntu-latest
       outputs:
         REPOSITORIES: ${{ steps.set-matrix.outputs.REPO }}
-        OWNER: ${{ steps.set-owner.outputs.OW}}
-        USER: ${{ steps.set-user.outputs.US}}
-        EMAIL: ${{ steps.set-email.outputs.EM }}
+        OWNER: ${{ steps.set-owner.outputs.OW }}
+        ENV-NAME: ${{ steps.sset-name-env.outputs.NE }}
       steps:
         - name: Checkout to repository
           uses: actions/checkout@v3
@@ -25,12 +24,9 @@ jobs:
           run: echo "OW=$(jq -r '.owner' repositories.json)" >> $GITHUB_OUTPUT 
 
         - name: Set user
-          id: set-user
-          run: echo "US=$(jq -r '.owner' repositories.json)" >> $GITHUB_OUTPUT 
+          id: set-name-env
+          run: echo "NE=$(jq -r '.name_env' env.json)" >> $GITHUB_OUTPUT 
 
-        - name: Set email
-          id: set-email
-          run: echo "EM=$(jq -r '.owner' repositories.json)" >> $GITHUB_OUTPUT 
 
   create-ENV:
     runs-on: ubuntu-latest
@@ -48,11 +44,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
           OWNER: ${{ needs.Get-Repositories-To-Inject.outputs.OWNER }}
+          ENV-NAME: ${{ needs.Get-Repositories-To-Inject.outputs.ENV-NAME }}
         run: |
           curl -L \
           -X PUT \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ env.GH_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/jgonzalez-clever/${{ matrix.repositorie }}/environments/test1 \
+          https://api.github.com/repos/${{ env.OWNER }}/${{ matrix.repositorie }}/environments/${{ env.ENV-NAME }} \
           -d '{"wait_timer":30}'

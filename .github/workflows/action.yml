@@ -47,7 +47,7 @@ jobs:
           OWNER: ${{ needs.Get-Repositories-To-Inject.outputs.OWNER }}
           ENV-NAME: ${{ needs.Get-Repositories-To-Inject.outputs.ENV-NAME }}
         run: |
-          BODY_ENV=$(jq -c -r '.body_parameters' env.json | tr -d '[]')
+          BODY_ENV=$(jq -c -r '.body_parameters' env.json | tr -d '[]') && echo "$BODY_ENV"
           echo "${{ env.OWNER }}"
           echo "${{ matrix.repositorie }}"
           echo "${{ env.ENV-NAME }} "

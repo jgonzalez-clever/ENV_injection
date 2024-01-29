@@ -28,9 +28,7 @@ jobs:
           id: set-name-env
           run: echo "NE=$(jq -r '.name_env' env.json)" >> $GITHUB_OUTPUT 
         
-        - name: Set body env
-          id: set-body-env
-          run: echo "BE=$(jq -r '.body_par' env.json)" >> $GITHUB_OUTPUT 
+
 
 
   create-ENV:

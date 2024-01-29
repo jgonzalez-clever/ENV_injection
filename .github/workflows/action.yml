@@ -11,6 +11,7 @@ jobs:
         REPOSITORIES: ${{ steps.set-matrix.outputs.REPO }}
         OWNER: ${{ steps.set-owner.outputs.OW }}
         ENV-NAME: ${{ steps.set-name-env.outputs.NE }}
+        ENV-BODY: ${{ steps.set-body-env.outputs.BE }}
       steps:
         - name: Checkout to repository
           uses: actions/checkout@v3
@@ -23,9 +24,13 @@ jobs:
           id: set-owner
           run: echo "OW=$(jq -r '.owner' repositories.json)" >> $GITHUB_OUTPUT 
 
-        - name: Set user
+        - name: Set name env
           id: set-name-env
           run: echo "NE=$(jq -r '.name_env' env.json)" >> $GITHUB_OUTPUT 
+        
+        - name: Set body env
+          id: set-body-env
+          run: echo "NE=$(jq -r '.body_par' env.json)" >> $GITHUB_OUTPUT 
 
 
   create-ENV:
@@ -45,6 +50,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_PAT }}
           OWNER: ${{ needs.Get-Repositories-To-Inject.outputs.OWNER }}
           ENV-NAME: ${{ needs.Get-Repositories-To-Inject.outputs.ENV-NAME }}
+          ENV-BODY: ${{ needs.Get-Repositories-To-Inject.outputs.ENV-BODY }}
         run: |
           echo "${{ env.OWNER }}"
           echo "${{ matrix.repositorie }}"
@@ -55,4 +61,4 @@ jobs:
           -H "Authorization: Bearer ${{ env.GH_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/${{ env.OWNER }}/${{ matrix.repositorie }}/environments/${{ env.ENV-NAME }} \
-          -d '{"wait_timer":30}'
+          -d '${{ env.ENV-BODY }}'

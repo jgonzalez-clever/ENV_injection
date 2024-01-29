@@ -40,3 +40,7 @@ jobs:
         # SET MATRIX WITH repositories TO MIGRATE
         matrix: 
             repositories: ${{fromJson(needs.Get-Repositories-To-Inject.outputs.REPOSITORIES)}}
+    steps:
+
+      - name: echo
+        run: echo "hw"

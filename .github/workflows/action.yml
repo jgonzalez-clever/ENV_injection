@@ -46,6 +46,9 @@ jobs:
           OWNER: ${{ needs.Get-Repositories-To-Inject.outputs.OWNER }}
           ENV-NAME: ${{ needs.Get-Repositories-To-Inject.outputs.ENV-NAME }}
         run: |
+          echo "${{ env.OWNER }}"
+          echo "${{ matrix.repositorie }}"
+          echo "${{ env.ENV-NAME }} "
           curl -L \
           -X PUT \
           -H "Accept: application/vnd.github+json" \

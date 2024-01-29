@@ -10,7 +10,7 @@ jobs:
       outputs:
         REPOSITORIES: ${{ steps.set-matrix.outputs.REPO }}
         OWNER: ${{ steps.set-owner.outputs.OW }}
-        ENV-NAME: ${{ steps.sset-name-env.outputs.NE }}
+        ENV-NAME: ${{ steps.set-name-env.outputs.NE }}
       steps:
         - name: Checkout to repository
           uses: actions/checkout@v3

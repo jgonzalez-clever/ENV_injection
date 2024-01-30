@@ -2,7 +2,6 @@ name: Create ENV
 
 on:
   workflow_dispatch:
-
 jobs:
 
   Get-Repositories-To-Inject:
@@ -26,9 +25,6 @@ jobs:
         - name: Set name env
           id: set-name-env
           run: echo "NE=$(jq -r '.name_env' env.json)" >> $GITHUB_OUTPUT 
-
-        #- id: read-json-rules
-        #  run: echo "RULESETS=$(jq -c . < ./rulesets.json)" >> $GITHUB_OUTPUT
         
   create-ENV:
     runs-on: ubuntu-latest

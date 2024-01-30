@@ -23,9 +23,9 @@ jobs:
           id: set-owner
           run: echo "OW=$(jq -r '.owner' repositories.json)" >> $GITHUB_OUTPUT 
 
-        #- name: Set name env
-        #  id: set-name-env
-        #  run: echo "NE=$(jq -r '.name_env' env.json)" >> $GITHUB_OUTPUT 
+        - name: Set name env
+          id: set-name-env
+          run: echo "NE=$(jq -r '.name_env' env.json)" >> $GITHUB_OUTPUT 
 
         #- id: read-json-rules
         #  run: echo "RULESETS=$(jq -c . < ./rulesets.json)" >> $GITHUB_OUTPUT

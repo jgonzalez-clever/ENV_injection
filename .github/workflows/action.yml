@@ -64,5 +64,5 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/jgonzalez-clever/${{ matrix.repositorie }}/environments/${{ env.ENV-NAME }}/variables \
+          https://api.github.com/repos/${{ env.OWNER }}/${{ matrix.repositorie }}/environments/${{ env.ENV-NAME }}/variables \
           -d "$VAR_ENV"

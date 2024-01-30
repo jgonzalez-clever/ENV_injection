@@ -1,8 +1,5 @@
 {
     "owner" : "jgonzalez-clever",
-    "user" : "jgonzalez-clever",
-    "email" : "julian.gonzalez@cleveritgroup.com",
-
     "repositories": [
       {
         "repo_name": "repo1"

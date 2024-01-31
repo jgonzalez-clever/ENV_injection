@@ -1,4 +1,4 @@
-name: Create ENV
+name: Create VAR REP
 
 on:
   workflow_dispatch:

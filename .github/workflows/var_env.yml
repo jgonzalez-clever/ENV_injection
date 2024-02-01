@@ -21,10 +21,6 @@ jobs:
         - name: Set owner
           id: set-owner
           run: echo "OW=$(jq -r '.owner' repositories.json)" >> $GITHUB_OUTPUT 
-
-        - name: Set name env
-          id: set-name-env
-          run: echo "NE=$(jq -r '.name_env' env.json)" >> $GITHUB_OUTPUT 
         
   create-ENV:
     runs-on: ubuntu-latest
@@ -46,37 +42,51 @@ jobs:
           OWNER: ${{ needs.Get-Repositories-To-Inject.outputs.OWNER }}
           ENV-NAME: ${{ needs.Get-Repositories-To-Inject.outputs.ENV-NAME }}
         run: |
-          BODY_ENV=$(jq -c '.body_parameters' env.json | tr -d '[]') && echo "$BODY_ENV"
+          
           echo "${{ env.OWNER }}"
           echo "${{ matrix.repositorie }}"
           echo "${{ env.ENV-NAME }} "
-          curl -L \
-          -X PUT \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ env.GH_TOKEN }}" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/${{ env.OWNER }}/${{ matrix.repositorie }}/environments/${{ env.ENV-NAME }} \
-          -d "$BODY_ENV"
 
+          arr=($(jq -c '.[]' env.json))
 
-          VAR_ENV=$(jq -c '.variables' env.json) && echo "$VAR_ENV"
-          # Obtén la longitud del array
-          length=$(jq 'length' <<< "$VAR_ENV")
+          # Iterar sobre los elementos del array
+          for i in "${!arr[@]}"; do
 
-          # Itera sobre los elementos del array
-          for ((i = 0; i < length; i++)); do
-            # Extrae el elemento actual del array
-            current_element=$(jq --argjson index "$i" '.[$index]' <<< "$VAR_ENV")
+              NE=$(jq -r ".[$i].name_env" env.json)
+              BODY_ENV=$(jq -c '.[$i]body_parameters' env.json | tr -d '[]') && echo "$BODY_ENV"
 
-            # Imprime el elemento actual (puedes hacer otras operaciones aquí)
-            echo "$current_element"
-
-            # Realiza la solicitud curl con el elemento actual
-            curl -L \
-              -X POST \
+              curl -L \
+              -X PUT \
               -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
+              -H "Authorization: Bearer ${{ env.GH_TOKEN }}" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
-              "https://api.github.com/repos/${{ env.OWNER }}/${{ matrix.repositorie }}/environments/${{ env.ENV-NAME }}/variables" \
-              -d "$current_element"
+              https://api.github.com/repos/${{ env.OWNER }}/${{ matrix.repositorie }}/environments/$NE }} \
+              -d "$BODY_ENV"
+
+              VAR_ENV=$(jq -c '.[$i]variables' env.json) && echo "$VAR_ENV"
+              # Obtén la longitud del array
+              length=$(jq 'length' <<< "$VAR_ENV")
+    
+              # Itera sobre los elementos del array
+              for ((i = 0; i < length; i++)); do
+                # Extrae el elemento actual del array
+                current_element=$(jq --argjson index "$i" '.[$index]' <<< "$VAR_ENV")
+    
+                # Imprime el elemento actual (puedes hacer otras operaciones aquí)
+                echo "$current_element"
+    
+                # Realiza la solicitud curl con el elemento actual
+                curl -L \
+                  -X POST \
+                  -H "Accept: application/vnd.github+json" \
+                  -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
+                  -H "X-GitHub-Api-Version: 2022-11-28" \
+                  "https://api.github.com/repos/${{ env.OWNER }}/${{ matrix.repositorie }}/environments/${{ env.ENV-NAME }}/variables" \
+                  -d "$current_element"
+              done
+
           done
+
+
+
+

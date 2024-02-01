@@ -43,7 +43,9 @@ jobs:
           ENV-NAME: ${{ needs.Get-Repositories-To-Inject.outputs.ENV-NAME }}
         run: |
             project_name=$(echo "${{ matrix.repositorie }}" | sed 's/-.*//')
+            rep_name=$(echo "${{ matrix.repositorie }}" | sed 's/^[^-]*-//')
             echo "$project_name"
+            echo "$rep_name"
             echo "${{ env.OWNER }}"
             echo "${{ matrix.repositorie }}"
             
@@ -74,7 +76,7 @@ jobs:
               # Verifica si el valor del campo "name" es igual a "APPNAME"
               if [ "$name" == "APPNAME" ]; then
                   # Si es igual, establece el valor en "matrix"
-                  current_element=$(jq '.value = "${{ matrix.repositorie }}"' <<< "$current_element")
+                  current_element=$(jq --arg project_name "$rep_name" '.value = $project_name' <<< "$current_element")
               fi
 
               # Verifica si el valor del campo "name" es igual a "PROJECTKEY"

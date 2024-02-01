@@ -43,7 +43,7 @@ jobs:
           ENV-NAME: ${{ needs.Get-Repositories-To-Inject.outputs.ENV-NAME }}
         run: |
             project_name=$(echo "${{ matrix.repositorie }}" | sed 's/-.*//')
-            echo '$project_name'
+            echo "$project_name"
             echo "${{ env.OWNER }}"
             echo "${{ matrix.repositorie }}"
             
@@ -80,7 +80,7 @@ jobs:
               # Verifica si el valor del campo "name" es igual a "PROJECTKEY"
               if [ "$name" == "PROJECTKEY" ]; then
                   # Si es igual, establece el valor en "matrix"
-                  current_element=$(jq '.value = "$project_name"' <<< "$current_element")
+                  current_element=$(jq --arg project_name "$project_name" '.value = $project_name' <<< "$current_element")
               fi
 
               # Realiza la solicitud curl con el elemento actual

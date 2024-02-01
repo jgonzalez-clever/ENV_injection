@@ -26,7 +26,7 @@ jobs:
           id: set-name-env
           run: echo "NE=$(jq -r '.name_env' env.json)" >> $GITHUB_OUTPUT 
         
-  create-ENV:
+  create-VAR:
     runs-on: ubuntu-latest
     needs: [Get-Repositories-To-Inject]
     strategy:

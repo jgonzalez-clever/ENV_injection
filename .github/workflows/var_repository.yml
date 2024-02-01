@@ -42,9 +42,10 @@ jobs:
           OWNER: ${{ needs.Get-Repositories-To-Inject.outputs.OWNER }}
           ENV-NAME: ${{ needs.Get-Repositories-To-Inject.outputs.ENV-NAME }}
         run: |
+            project_name=$(echo "${{ matrix.repositorie }}" | sed 's/-.*//')
             echo "${{ env.OWNER }}"
             echo "${{ matrix.repositorie }}"
-
+            
             response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${{ env.GH_TOKEN }}" "https://api.github.com/repos/${{ env.OWNER }}/${{ matrix.repositorie }}")
 
             # Verificar el código de respuesta
@@ -73,6 +74,12 @@ jobs:
               if [ "$name" == "APPNAME" ]; then
                   # Si es igual, establece el valor en "matrix"
                   current_element=$(jq '.value = "${{ matrix.repositorie }}"' <<< "$current_element")
+              fi
+
+              # Verifica si el valor del campo "name" es igual a "APPNAME"
+              if [ "$name" == "PROJECTKEY" ]; then
+                  # Si es igual, establece el valor en "matrix"
+                  current_element=$(jq '.value = "$project_name"' <<< "$current_element")
               fi
 
               # Realiza la solicitud curl con el elemento actual

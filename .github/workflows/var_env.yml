@@ -47,6 +47,17 @@ jobs:
           echo "${{ matrix.repositorie }}"
           echo "${{ env.ENV-NAME }} "
 
+          response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${{ env.GH_TOKEN }}" "https://api.github.com/repos/${{ env.OWNER }}/${{ matrix.repositorie }}")
+
+          # Verificar el código de respuesta
+          if [ "$response" -eq 200 ]; then
+            echo "El repositorio ${{ env.OWNER }}/${{ matrix.repositorie }} existe."
+          else
+            echo "Error: El repositorio ${{ env.OWNER }}/${{ matrix.repositorie }} no existe."
+            exit 1  # Salir con un código de error
+          fi
+
+
           # Leer el JSON en un array
           arr=($(jq -c '.[]' env.json))
 

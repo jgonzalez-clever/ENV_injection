@@ -48,7 +48,7 @@ jobs:
         run: |
             echo "${{ env.OWNER }}"
             echo "${{ matrix.repositorie }}"
-            
+
             response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${{ env.GH_TOKEN }}" "https://api.github.com/repos/${{ env.OWNER }}/${{ matrix.repositorie }}")
 
             # Verificar el código de respuesta
@@ -58,15 +58,6 @@ jobs:
               echo "Error: El repositorio ${{ env.OWNER }}/${{ matrix.repositorie }} no existe."
               exit 1  # Salir con un código de error
             fi
-
-
-            curl -L \
-            -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ env.GH_TOKEN }}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/${{ env.OWNER}}/${{ matrix.repositorie }}/actions/variables \
-            -d '{"name":"USERNAME","value":"octocat"}'
 
             VAR_ENV=$(jq -c '.variables' var_rep.json) && echo "$VAR_ENV"
             # Obtén la longitud del array
@@ -80,6 +71,14 @@ jobs:
               # Imprime el elemento actual (puedes hacer otras operaciones aquí)
               echo "$current_element"
   
+              name=$(jq -r '.name' <<< "$current_element")
+
+              # Verifica si el valor del campo "name" es igual a "APPNAME"
+              if [ "$name" == "APPNAME" ]; then
+                  # Si es igual, establece el valor en "matrix"
+                  current_element=$(jq '.value = "${{ matrix.repositorie }}"' <<< "$current_element")
+              fi
+
               # Realiza la solicitud curl con el elemento actual
                 curl -L \
                 -X POST \

@@ -42,7 +42,7 @@ jobs:
           OWNER: ${{ needs.Get-Repositories-To-Inject.outputs.OWNER }}
           ENV-NAME: ${{ needs.Get-Repositories-To-Inject.outputs.ENV-NAME }}
         run: |
-            project_name=$(echo "${{ matrix.repositorie }}" | sed 's/-.*//')
+            project_name=$(echo "${{ matrix.repositorie }}" | sed 's/-.*//' | tr '[:upper:]' '[:lower:]')
             rep_name=$(echo "${{ matrix.repositorie }}" | sed 's/^[^-]*-//')
             echo "$project_name"
             echo "$rep_name"

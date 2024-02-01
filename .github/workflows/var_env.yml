@@ -53,7 +53,7 @@ jobs:
           for i in "${!arr[@]}"; do
 
               NE=$(jq -r ".[$i].name_env" env.json)
-              BODY_ENV=$(jq -c '.[$i]body_parameters' env.json | tr -d '[]') && echo "$BODY_ENV"
+              BODY_ENV=$(jq -c ".[$i].body_parameters" env.json | tr -d '[]') && echo "$BODY_ENV"
 
               curl -L \
               -X PUT \
@@ -63,7 +63,7 @@ jobs:
               https://api.github.com/repos/${{ env.OWNER }}/${{ matrix.repositorie }}/environments/$NE }} \
               -d "$BODY_ENV"
 
-              VAR_ENV=$(jq -c '.[$i]variables' env.json) && echo "$VAR_ENV"
+              VAR_ENV=$(jq -c ".[$i]variables" env.json) && echo "$VAR_ENV"
               # Obtén la longitud del array
               length=$(jq 'length' <<< "$VAR_ENV")
     

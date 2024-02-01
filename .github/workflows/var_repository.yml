@@ -76,7 +76,7 @@ jobs:
                   current_element=$(jq '.value = "${{ matrix.repositorie }}"' <<< "$current_element")
               fi
 
-              # Verifica si el valor del campo "name" es igual a "APPNAME"
+              # Verifica si el valor del campo "name" es igual a "PROJECTKEY"
               if [ "$name" == "PROJECTKEY" ]; then
                   # Si es igual, establece el valor en "matrix"
                   current_element=$(jq '.value = "$project_name"' <<< "$current_element")
